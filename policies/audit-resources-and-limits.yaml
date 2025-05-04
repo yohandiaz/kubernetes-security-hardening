@@ -1,0 +1,88 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: audit-resource-requests-limits
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: pod-resources
+    match:
+      resources:
+        kinds: ["Pod"]
+    exclude:
+      resources:
+        namespaces:
+        - kube-system
+        - kyverno
+        - ingress-nginx
+        - kube-public
+        - kube-node-lease
+        - kubernetes-dashboard
+        - default
+    validate:
+      message: "Cada contenedor debe definir requests y limits de CPU y memoria."
+      foreach:
+      - list: spec.containers
+        elementScope: true
+        pattern:
+          resources:
+            requests:
+              cpu: "?*"
+              memory: "?*"
+            limits:
+              cpu: "?*"
+              memory: "?*"
+      - list: spec.initContainers
+        elementScope: true
+        pattern:
+          resources:
+            requests:
+              cpu: "?*"
+              memory: "?*"
+            limits:
+              cpu: "?*"
+              memory: "?*"
+
+  - name: workload-resources
+    match:
+      resources:
+        kinds:
+        - Deployment
+        - StatefulSet
+        - DaemonSet
+        - Job
+        - CronJob
+    exclude:
+      resources:
+        namespaces:
+        - kube-system
+        - kyverno
+        - ingress-nginx
+        - kube-public
+        - kube-node-lease
+        - kubernetes-dashboard
+        - default
+    validate:
+      message: "Cada contenedor en spec.template debe definir requests y limits de CPU y memoria."
+      foreach:
+      - list: spec.template.spec.containers
+        elementScope: true
+        pattern:
+          resources:
+            requests:
+              cpu: "?*"
+              memory: "?*"
+            limits:
+              cpu: "?*"
+              memory: "?*"
+      - list: spec.template.spec.initContainers
+        elementScope: true
+        pattern:
+          resources:
+            requests:
+              cpu: "?*"
+              memory: "?*"
+            limits:
+              cpu: "?*"
+              memory: "?*"

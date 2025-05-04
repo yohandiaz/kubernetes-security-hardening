@@ -27,7 +27,6 @@ spec:
           - kube-public
           - kube-node-lease
           - kubernetes-dashboard
-          - default
     mutate:
       patchStrategicMerge:
         spec:

@@ -1,0 +1,49 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: audit-drop-cap-net-raw
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: audit-drop-cap-net-raw
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          - Deployment
+          - DaemonSet
+          - StatefulSet
+          - Job
+          - CronJob
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
+          - kyverno
+          - ingress-nginx
+          - kube-public
+          - kube-node-lease
+          - kubernetes-dashboard
+          - default
+    validate:
+      message: >
+        Cada contenedor debe especificar
+        securityContext.capabilities.drop: ["NET_RAW"]
+      foreach:
+      - list: "spec.containers"
+        elementScope: true
+        pattern:
+          securityContext:
+            capabilities:
+              drop:
+              - NET_RAW
+      - list: "spec.initContainers"
+        elementScope: true
+        pattern:
+          securityContext:
+            capabilities:
+              drop:
+              - NET_RAW

@@ -3,7 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: enforce-psa-restricted-label
 spec:
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
   background: true
   rules:
   - name: workload-ns-must-be-restricted

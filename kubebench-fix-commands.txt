@@ -1,0 +1,25 @@
+docker exec -it tfg-base-m02 bash
+
+
+chmod 600 /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+chmod 600 /var/lib/kubelet/config.yaml
+chmod 600 /var/lib/kubelet/pki/kubelet.crt
+
+apt update
+
+apt install -y nano
+
+nano /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+# delete --hostname-override
+
+--tls-cert-file=/var/lib/kubelet/pki/kubelet.crt --tls-private-key-file=/var/lib/kubelet/pki/kubelet.key --tls-cipher-suites=TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256
+
+nano /var/lib/kubelet/config.yaml
+
+podPidsLimit: 1000
+
+systemctl daemon-reload
+systemctl restart kubelet
+
+docker exec -it tfg-base bash
