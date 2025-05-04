@@ -2,12 +2,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kube-bench
+  name: kube-bench-1
 spec:
   template:
     metadata:
       labels:
-        app: kube-bench
+        app: kube-bench-1
     spec:
       containers:
         - command: ["kube-bench"]

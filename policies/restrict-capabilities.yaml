@@ -1,0 +1,44 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-capabilities
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+  - name: disallow-privileged-capabilities
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kube-system
+          - kyverno
+          - ingress-nginx
+          - kube-public
+          - kube-node-lease
+          - kubernetes-dashboard
+          - default
+    validate:
+      message: "Se prohíben contenedores privilegiados, hostPID/IPC/Network y capabilities adicionales."
+      pattern:
+        spec:
+          hostPID: false
+          hostIPC: false
+          hostNetwork: false
+          containers:
+          - securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: "!*"
+          initContainers:
+          - securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: "!*"
