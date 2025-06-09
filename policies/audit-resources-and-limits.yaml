@@ -3,7 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: audit-resource-requests-limits
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
   - name: pod-resources

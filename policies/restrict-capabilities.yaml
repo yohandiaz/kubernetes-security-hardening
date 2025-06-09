@@ -3,7 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: restrict-capabilities
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
   - name: disallow-privileged-capabilities
@@ -34,11 +34,8 @@ spec:
           - securityContext:
               privileged: false
               allowPrivilegeEscalation: false
-              capabilities:
-                add: "!*"
+
           initContainers:
           - securityContext:
               privileged: false
               allowPrivilegeEscalation: false
-              capabilities:
-                add: "!*"
